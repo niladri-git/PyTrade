@@ -1,8 +1,11 @@
 
 $ sh positions.sh | grep OCT
 
+ CE   | 7800 | OCT   |  50
  PE   | 7700 | OCT   |  50
  CE   | 8400 | OCT   |  50
  PE   | 7700 | OCT   |  100
 
 +++
+
+close = 8000
