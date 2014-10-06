@@ -1,4 +1,4 @@
-#/usr/bin/python
+ #/usr/bin/python
 
 cont_dict = {}
 
@@ -6,25 +6,26 @@ with open("cont.txt", "r") as file:
 
 	for line in file:
 		if "|" in line and "sh" not in line:
-			
+		
 			' '.join(line.split())
-			(type, strike, month, qty) = line.split("|")			
+			(type, strike, month, qty) = line.split("|")
 			key = strike + type
 			cont_dict[key] = cont_dict.get(key, 0) + int(qty)
 
-for key in cont_dict.keys():
-	print(key, "=>", cont_dict[key])
-	
-close = 7800
-print("\nclose: ", close)
+	print("")
+
+	for key in sorted(cont_dict):
+		print(("%s  =>  % d") % (' '.join(key.split()), int(cont_dict[key])))
+
+	print("\n")
 
 def exp_calls():
-	print("\nExpiring Calls\n")
+	net_cal_val = 0
   
 	for key in cont_dict.keys():
 		if "CE" in key:
-		
-			' '.join(key.split())	
+	
+			' '.join(key.split())
 			(strike, type) = key.split()
 			qty = cont_dict[key]
 			
@@ -32,31 +33,29 @@ def exp_calls():
 			con_val = deno * qty
 			cls_val = close * -qty
 			dif_val = con_val + cls_val
-			
-			#print(dif_val)
-			
-			if (qty > 0):	
+
+			if (qty > 0):
 				if (close > deno):
-					net_val = -dif_val			
+					net_val = -dif_val
 				else:
 					net_val = 0
-			
-			else:	
+			else:
 				if (close > deno):
 					net_val = -dif_val
 				else:
 					net_val = 0
 					
-			print(strike, "=>", qty, "\t", "Exp Val:", net_val)
-			
+			net_cal_val += net_val
+
+	return(net_cal_val)
 
 def exp_puts():
-	print("\nExpiring Puts")
-	
+	net_put_val = 0
+
 	for key in cont_dict.keys():
 		if "PE" in key:
-		
-			' '.join(key.split())	
+
+			' '.join(key.split())
 			(strike, type) = key.split()
 			qty = cont_dict[key]
 			
@@ -64,20 +63,30 @@ def exp_puts():
 			con_val = deno * qty
 			cls_val = close * -qty
 			dif_val = con_val + cls_val
-			
-			#print(dif_val)
-			
+
 			if (close > deno):
 				net_val = 0
 			else:
 				net_val = dif_val;
 				
-			print(strike, "=>", qty, "\t", "Exp Val:", net_val)
+			net_put_val += net_val
+
+	return(net_put_val)
 
 
-def exp_futs():
-	print("\nExpiring Futures")
-  
-exp_calls()
-exp_puts()
-#exp_futs()
+for close in range(7500, 8500, 50):
+
+	net_value = 0
+	
+	net_cal_value = exp_calls()
+	net_put_value = exp_puts()
+
+	if not net_cal_value:
+		net_cal_value = 0
+		
+	if not net_put_value:
+		net_put_value = 0
+		
+	net_value = net_cal_value + net_put_value
+
+	print("close = ", close, "\tNet Value: ", net_value)
