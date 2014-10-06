@@ -89,4 +89,5 @@ for close in range(7500, 8500, 50):
 		
 	net_value = net_cal_value + net_put_value
 
-	print("close = ", close, "\tNet Value: ", net_value)
+	#print("close = %d", close, "\tNet Value: ", net_value)
+	print("close: %d       Net Value:  %d" % (close, net_value))
